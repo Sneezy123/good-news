@@ -1,26 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+    --background: hsl(0, 0%, 100%);
+    --outline: hsl(0, 0%, 80%);
+    --foreground: hsl(0, 0%, 10%);
+    --accent-s: 60%;
+    --accent-l: 60%;
+    --accent: hsl(210, var(--accent-s), var(--accent-l));
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    :root {
+        --background: hsl(0, 0%, 5%);
+        --outline: hsl(0, 0%, 15%);
+        --foreground: hsl(0, 0%, 90%);
+        --accent-s: 40%;
+        --accent-l: 40%;
+        --accent: hsl(210, var(--accent-s), var(--accent-l));
+    }
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-accent: var(--accent);
+    --color-outline: var(--outline);
+    --font-sans: var(--font-sora-sans);
+    --font-mono: var(--font-geist-mono);
+    --animate-border-pulse: border-pulse 2s cubic-bezier(0.4, 0, 0.6, 1)
+        infinite;
+
+    @keyframes border-pulse {
+        50% {
+            border-color: hsl(
+                210,
+                var(--accent-s),
+                calc(var(--accent-l) - 20%)
+            );
+        }
+    }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sora-sans), Helvetica, Arial;
 }
