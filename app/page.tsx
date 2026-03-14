@@ -32,7 +32,9 @@ export default function Home() {
   });
 
   if (newsLoading) {
-    return <p>Loading</p>;
+    return <div className="w-full h-dvh flex flex-col justify-center items-center">
+      <p className="animate-bounce text-lg">Nachrichten werden geladen...</p>
+    </div>
   } else if (newsLoaded && newsData.items) {
     console.log(newsData);
     return (

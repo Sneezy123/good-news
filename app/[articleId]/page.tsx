@@ -16,13 +16,14 @@ type ParsedArticle = {
   publishedTime: string | null | undefined;
 } | null;
 
-export default async function ArticlePage({
-  params,
-}: {
-  params: Promise<{ articleId: string }>;
-}) {
-  const { articleId } = await params;
+type Article = {
+  title: string;
+  content: string;
+  siteName: string;
+  publishedTime: string;
+}
 
+async function getArticle(articleId: string) {
   const articleUrl = await decodeURL(encodeURIComponent(articleId));
 
   const fetchRes = await fetch(articleUrl);
@@ -35,7 +36,7 @@ export default async function ArticlePage({
   let content: string = "No text found";
   let title: string = "...";
   let siteName: string = "";
-  let pubTime: string = new Date().toLocaleString();
+  let pubTime: string = new Date().toLocaleString("de");
 
   if (article) {
     if (article.content) {
@@ -62,23 +63,36 @@ export default async function ArticlePage({
     if (article.siteName) siteName = article.siteName;
     if (article.publishedTime) {
       const pubDate = new Date(Date.parse(article.publishedTime));
-      pubTime = pubDate.toLocaleString();
+      pubTime = pubDate.toLocaleString("de");
     }
   }
-  return (
-    article && (
+  const retArt: Article = { title: title, content: content, siteName: siteName, publishedTime: pubTime }
+  return retArt;
+}
+
+export default async function ArticlePage({
+  params,
+}: {
+  params: Promise<{ articleId: string }>;
+}) {
+  const { articleId } = await params;
+
+  const articleData = await getArticle(articleId);
+
+  if (articleData) {
+    return (
       <div className="max-w-400 w-[60dvw] min-w-100 mx-auto py-10 ">
-        <h1 className="font-bold text-4xl">{title}</h1>
+        <h1 className="font-bold text-4xl">{articleData.title}</h1>
         <div className="flex flex-row gap-5 mb-5 mt-2 text-lg">
-          <p className="font-bold">{siteName}</p>
-          <p>{pubTime}</p>
+          <p className="font-bold">{articleData.siteName}</p>
+          <p>{articleData.publishedTime}</p>
         </div>
         <div className="w-full h-0.5 bg-white/30 mb-4"></div>
         <div
           className="[&_h2]:text-2xl [&_h3]:text-xl [&_p]:my-5 [&_p]:text-base  [&_a]:text-blue-400"
-          dangerouslySetInnerHTML={{ __html: content }}
+          dangerouslySetInnerHTML={{ __html: articleData.content }}
         ></div>
       </div>
-    )
-  );
+    );
+  }
 }

@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { Sora, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import type { Metadata } from "next";
+import { Geist_Mono, Sora } from "next/font/google";
+import "./globals.css";
 
 const soraSans = Sora({
   variable: "--font-sora-sans",
