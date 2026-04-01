@@ -2,7 +2,9 @@
 
 import Parser from "rss-parser";
 import { unstable_cache } from "next/cache";
-import { ArticleType, NewsData } from "@/app/page";
+import { ArticleType } from "@/app/page";
+
+import rateHeadlines from "./rateHeadlines";
 
 async function _fetchFeed(url: string) {
   try {
@@ -16,14 +18,19 @@ async function _fetchFeed(url: string) {
 
     const feed = await parser.parseURL(url);
 
-    const cleanItems: ArticleType[] = feed.items.map((item) => ({
-      title: item.title || "-", // Fallback if missing
+    // Extract titles for batch sentiment analysis
+    const titles = feed.items.map((item) => item.title || "-");
+    const sentiments = await rateHeadlines(titles);
+
+    const cleanItems: ArticleType[] = feed.items.map((item, index) => ({
+      title: item.title || "-",
       pubDate: item.pubDate || "",
       isoDate: item.isoDate || "",
       link: item.link || "",
-      guid: item.guid || item.link || "", // Use link as ID if guid is missing
+      guid: item.guid || item.link || "",
       content: item.content || "",
       contentSnippet: item.contentSnippet || "",
+      sentiment: sentiments[index],
     }));
 
     return { items: cleanItems };
@@ -33,6 +40,6 @@ async function _fetchFeed(url: string) {
   }
 }
 
-export const fetchNews = unstable_cache(_fetchFeed, ["newsFeed"], {
+export const fetchNews = unstable_cache(_fetchFeed, ["newsFeed_v3"], {
   revalidate: 900,
 });

@@ -13,6 +13,10 @@ export type ArticleType = {
   guid: string;
   content: string;
   contentSnippet: string;
+  sentiment?: {
+    label: string;
+    score: number;
+  };
 };
 
 export type NewsData = {
@@ -39,7 +43,7 @@ export default function Home() {
     console.log(newsData);
     return (
       <>
-        <div className="px-6 flex flex-row gap-5 py-3 justify-between top-0 sticky bg-background ">
+        <div className="px-6 flex flex-row gap-5 py-3 justify-between top-0 sticky bg-background z-10">
           <p className="text-center text-3xl sm:block hidden">Nachrichten</p>
           <SearchBar />
         </div>
